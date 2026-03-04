@@ -14,22 +14,24 @@
   :root {
     --bg: #0a0a0a;
     --text: #d4d4d4;
+    --text-dim: #3a3a3a;
     --text-secondary: #5a5a5a;
     --accent: #c9a96e;
     --accent-soft: rgba(201,169,110,0.08);
     --border: #1e1e1e;
-    --check-stroke: #0a0a0a;
+    --btn-bg: transparent;
     --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   html.light {
     --bg: #fafaf8;
     --text: #2a2a2a;
+    --text-dim: #d0d0cc;
     --text-secondary: #a0a0a0;
     --accent: #b8943e;
     --accent-soft: rgba(184,148,62,0.07);
     --border: #e8e8e4;
-    --check-stroke: #fafaf8;
+    --btn-bg: transparent;
   }
 
   body {
@@ -56,7 +58,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-secondary);
     transition: color var(--transition);
     padding: 4px;
@@ -67,131 +69,155 @@
   }
   .theme-toggle:hover { color: var(--accent); }
 
-  header {
-    text-align: center;
-    padding: 48px 0 40px;
+  /* Greeting area */
+  .greeting {
+    padding: 48px 0 12px;
   }
-  header h1 {
-    font-size: 1.75rem;
+  .greeting-text {
+    font-size: 1.5rem;
     font-weight: 300;
-    letter-spacing: -0.3px;
     color: var(--text);
-    margin-bottom: 4px;
+    line-height: 1.35;
   }
-  header p {
-    color: var(--text-secondary);
+  .greeting-sub {
     font-size: 0.85rem;
     font-weight: 400;
-    letter-spacing: 0.2px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    letter-spacing: 0.1px;
   }
 
+  /* Ring */
   .ring-wrap {
     display: flex;
     justify-content: center;
-    padding: 8px 0 40px;
+    padding: 32px 0 36px;
   }
   .ring-svg {
-    width: 128px;
-    height: 128px;
+    width: 100px;
+    height: 100px;
     transform: rotate(-90deg);
   }
   .ring-track {
     fill: none;
     stroke: var(--border);
-    stroke-width: 4;
+    stroke-width: 3;
   }
   .ring-progress {
     fill: none;
     stroke: var(--accent);
-    stroke-width: 4;
+    stroke-width: 3;
     stroke-linecap: round;
-    stroke-dasharray: 326.73;
-    stroke-dashoffset: 326.73;
+    stroke-dasharray: 263.89;
+    stroke-dashoffset: 263.89;
     transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .habit {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 15px 0;
+  /* Question flow */
+  .question {
+    padding: 20px 0;
     border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
   }
-  .habit:last-child { border-bottom: none; }
-  .habit:active { opacity: 0.7; }
-  .habit.visible {
+  .question:last-child { border-bottom: none; }
+  .question.visible {
     opacity: 1;
     transform: translateY(0);
   }
-
-  .indicator {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: 1.5px solid var(--border);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background var(--transition), border-color var(--transition);
+  .question.answered {
+    opacity: 0.35;
+    transition: opacity 0.6s ease;
   }
-  .habit.done .indicator {
+  .question.answered.yes {
+    opacity: 0.55;
+  }
+
+  .q-text {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.45;
+    transition: color var(--transition);
+  }
+  .question.answered.yes .q-text {
+    color: var(--accent);
+  }
+  .question.answered.no .q-text {
+    color: var(--text-secondary);
+  }
+
+  .q-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  .q-btn {
+    flex: 1;
+    padding: 10px 0;
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    background: var(--btn-bg);
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: all var(--transition);
+    text-transform: lowercase;
+  }
+  .q-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .q-btn.selected-yes {
     background: var(--accent);
     border-color: var(--accent);
+    color: var(--bg);
   }
-  .indicator svg {
-    width: 11px;
-    height: 11px;
-    opacity: 0;
-    transform: scale(0.5);
-    transition: opacity 0.2s, transform 0.2s;
-  }
-  .habit.done .indicator svg {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  .habit-text { flex: 1; min-width: 0; }
-  .habit-name {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text);
-    transition: color var(--transition);
-    line-height: 1.3;
-  }
-  .habit.done .habit-name { color: var(--accent); }
-  .habit-detail {
-    font-size: 0.75rem;
-    font-weight: 400;
+  .q-btn.selected-no {
+    border-color: var(--text-secondary);
     color: var(--text-secondary);
-    line-height: 1.3;
-    margin-top: 1px;
   }
 
-  .completion {
-    text-align: center;
+  /* Closing message */
+  .closing {
     padding: 32px 0 0;
     opacity: 0;
-    transition: opacity 0.5s;
-    pointer-events: none;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
   }
-  .completion.show { opacity: 1; }
-  .completion-msg {
-    font-size: 0.9rem;
-    font-weight: 400;
-    color: var(--accent);
-    letter-spacing: 0.2px;
+  .closing.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
-  .completion-streak {
-    font-size: 0.78rem;
+  .closing-text {
+    font-size: 0.95rem;
     font-weight: 400;
     color: var(--text-secondary);
-    margin-top: 2px;
+    line-height: 1.5;
+  }
+  .closing-text span {
+    color: var(--accent);
+  }
+
+  /* Bedtime override */
+  .bedtime {
+    padding: 48px 0;
+    text-align: center;
+  }
+  .bedtime-text {
+    font-size: 1.3rem;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .bedtime-sub {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-top: 8px;
   }
 
   .site-footer {
@@ -205,9 +231,9 @@
 
   @media (max-width: 480px) {
     .container { padding: 24px 20px 56px; }
-    header { padding: 36px 0 32px; }
-    header h1 { font-size: 1.5rem; }
-    .ring-svg { width: 110px; height: 110px; }
+    .greeting { padding: 36px 0 8px; }
+    .greeting-text { font-size: 1.3rem; }
+    .ring-svg { width: 88px; height: 88px; }
   }
 </style>
 </head>
@@ -216,110 +242,212 @@
 <div class="container">
   <button class="theme-toggle" @click="toggleTheme()" aria-label="Toggle theme" x-text="light ? 'dark' : 'light'"></button>
 
-  <header>
-    <h1>Change Your Life</h1>
-    <p>Small daily habits. Extraordinary results.</p>
-  </header>
-
-  <div class="ring-wrap">
-    <svg class="ring-svg" viewBox="0 0 120 120">
-      <circle class="ring-track" cx="60" cy="60" r="52"/>
-      <circle class="ring-progress" cx="60" cy="60" r="52"
-              :style="'stroke-dashoffset:' + (326.73 * (1 - countDone(currentDate) / habits.length))"/>
-    </svg>
-  </div>
-
-  <div>
-    <template x-for="(habit, index) in habits" :key="habit.id">
-      <div class="habit"
-           :class="{ done: isDone(habit.id) }"
-           tabindex="0"
-           role="button"
-           :aria-pressed="isDone(habit.id) ? 'true' : 'false'"
-           @click="toggle(habit)"
-           @keydown.enter.prevent="toggle(habit)"
-           @keydown.space.prevent="toggle(habit)"
-           x-init="setTimeout(() => $el.classList.add('visible'), 60 + index * 50)"
-           :style="'transition: opacity 0.4s ease ' + (index * 0.05) + 's, transform 0.4s ease ' + (index * 0.05) + 's'">
-        <div class="indicator">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--check-stroke)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-        </div>
-        <div class="habit-text">
-          <div class="habit-name" x-text="habit.name"></div>
-          <div class="habit-detail" x-text="habit.detail"></div>
-        </div>
+  <!-- Bedtime override -->
+  <template x-if="isBedtime">
+    <div>
+      <div class="bedtime">
+        <div class="bedtime-text">Go to sleep.</div>
+        <div class="bedtime-sub">Tomorrow's a new day. Rest now.</div>
       </div>
-    </template>
-  </div>
+      <footer class="site-footer">Built with discipline.</footer>
+    </div>
+  </template>
 
-  <div class="completion" :class="{ show: isAllDone(currentDate) }">
-    <div class="completion-msg">All complete.</div>
-    <div class="completion-streak" x-show="streak > 1" x-cloak x-text="streak + ' day streak'"></div>
-  </div>
+  <!-- Normal flow -->
+  <template x-if="!isBedtime">
+    <div>
+      <div class="greeting">
+        <div class="greeting-text" x-text="greeting"></div>
+        <div class="greeting-sub" x-text="greetingSub"></div>
+      </div>
 
-  <footer class="site-footer">Built with discipline.</footer>
+      <div class="ring-wrap">
+        <svg class="ring-svg" viewBox="0 0 96 96">
+          <circle class="ring-track" cx="48" cy="48" r="42"/>
+          <circle class="ring-progress" cx="48" cy="48" r="42"
+                  :style="'stroke-dashoffset:' + (263.89 * (1 - answeredCount / questions.length))"/>
+        </svg>
+      </div>
+
+      <div>
+        <template x-for="(q, index) in questions" :key="q.id">
+          <div class="question"
+               :class="{
+                 visible: index <= currentIndex,
+                 answered: answers[q.id] !== undefined,
+                 yes: answers[q.id] === true,
+                 no: answers[q.id] === false
+               }"
+               x-init="$watch('currentIndex', v => { if (v >= index) setTimeout(() => $el.classList.add('visible'), 0) })">
+            <div class="q-text" x-text="q.text"></div>
+            <div class="q-buttons" x-show="answers[q.id] === undefined && index === currentIndex">
+              <button class="q-btn" @click="answer(q.id, true)">yes</button>
+              <button class="q-btn" @click="answer(q.id, false)">no</button>
+            </div>
+            <div class="q-buttons" x-show="answers[q.id] !== undefined" x-cloak>
+              <button class="q-btn" :class="{ 'selected-yes': answers[q.id] === true }" disabled x-show="answers[q.id] === true">yes</button>
+              <button class="q-btn" :class="{ 'selected-no': answers[q.id] === false }" disabled x-show="answers[q.id] === false">no</button>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div class="closing" :class="{ visible: allAnswered }">
+        <div class="closing-text" x-html="closingMessage"></div>
+      </div>
+
+      <footer class="site-footer">Built with discipline.</footer>
+    </div>
+  </template>
 </div>
 
 <script>
 function app() {
   return {
-    habits: [
-      { id: 'sleep',    name: 'Sleep 7+ hours',          detail: 'Quality rest for recovery' },
-      { id: 'hygiene',  name: 'Morning hygiene routine', detail: 'Shower, brush teeth, skincare' },
-      { id: 'workout',  name: 'Workout / Exercise',      detail: '30+ minutes of movement' },
-      { id: 'water',    name: 'Drink 8 glasses of water',detail: 'Stay hydrated all day' },
-      { id: 'read',     name: 'Read for 20+ minutes',    detail: 'Feed your mind daily' },
-      { id: 'meditate', name: 'Meditate / Mindfulness',  detail: '10 minutes of stillness' },
-      { id: 'eat',      name: 'Eat a healthy meal',      detail: 'No junk food today' },
-      { id: 'journal',  name: 'Journal / Reflect',       detail: 'Write about your day' },
-    ],
+    light: false,
     currentDate: '',
     data: {},
-    light: false,
-    bestStreak: 0,
+    currentIndex: 0,
+    answers: {},
+
+    questions: [],
+
+    get isBedtime() {
+      const h = new Date().getHours();
+      return h >= 0 && h < 5;
+    },
+
+    get timeOfDay() {
+      const h = new Date().getHours();
+      if (h >= 5 && h < 12) return 'morning';
+      if (h >= 12 && h < 17) return 'afternoon';
+      if (h >= 17 && h < 21) return 'evening';
+      return 'night';
+    },
+
+    get greeting() {
+      const greetings = {
+        morning: 'Good morning.',
+        afternoon: 'Good afternoon.',
+        evening: 'Good evening.',
+        night: 'Still up?',
+      };
+      return greetings[this.timeOfDay];
+    },
+
+    get greetingSub() {
+      const subs = {
+        morning: "Let's start the day right.",
+        afternoon: 'Quick check-in.',
+        evening: "Let's see how today went.",
+        night: "A few things before you rest.",
+      };
+      return subs[this.timeOfDay];
+    },
+
+    get answeredCount() {
+      return Object.keys(this.answers).filter(k => this.answers[k] !== undefined).length;
+    },
+
+    get allAnswered() {
+      return this.answeredCount === this.questions.length;
+    },
+
+    get closingMessage() {
+      const yes = Object.values(this.answers).filter(v => v === true).length;
+      const total = this.questions.length;
+      if (yes === total) return "Clean sweep. <span>Well done.</span>";
+      if (yes >= total * 0.75) return "Solid day. <span>Keep going.</span>";
+      if (yes >= total * 0.5) return "Some good choices in there. <span>That counts.</span>";
+      if (yes > 0) return "You showed up. <span>That matters.</span>";
+      return "Tomorrow. <span>Fresh start.</span>";
+    },
 
     init() {
       this.currentDate = this.todayStr();
       try { this.data = JSON.parse(localStorage.getItem('habit-tracker-data')) || {}; } catch { this.data = {}; }
       this.light = localStorage.getItem('cyl-theme') === 'light';
-      this.bestStreak = parseInt(localStorage.getItem('habit-tracker-best-streak') || '0', 10);
+      this.questions = this.getQuestions();
+
+      // Restore answers if already checked in today
+      if (this.data[this.currentDate]) {
+        this.answers = JSON.parse(JSON.stringify(this.data[this.currentDate]));
+        const answeredKeys = Object.keys(this.answers);
+        const lastAnswered = this.questions.findIndex(q => !answeredKeys.includes(q.id));
+        this.currentIndex = lastAnswered === -1 ? this.questions.length - 1 : lastAnswered;
+      } else {
+        this.answers = {};
+        this.currentIndex = 0;
+      }
     },
 
-    get streak() {
-      let n = 0, d = this.todayStr();
-      if (!this.isAllDone(d)) d = this.shiftDate(d, -1);
-      while (this.isAllDone(d)) { n++; d = this.shiftDate(d, -1); }
-      return n;
+    getQuestions() {
+      const t = this.timeOfDay;
+
+      const morning = [
+        { id: 'wokeOnTime', text: 'Did you wake up on time today?' },
+        { id: 'madeBed', text: 'Did you make your bed?' },
+        { id: 'hygiene', text: 'Shower, teeth, skincare — done?' },
+        { id: 'breakfast', text: 'Did you eat a proper breakfast?' },
+        { id: 'water', text: 'Have you had water yet?' },
+        { id: 'plan', text: 'Do you know what you need to do today?' },
+      ];
+
+      const afternoon = [
+        { id: 'water', text: 'Are you staying hydrated?' },
+        { id: 'meal', text: 'Have you eaten something real today?' },
+        { id: 'moved', text: 'Have you moved your body at all?' },
+        { id: 'focused', text: 'Did you get focused work done?' },
+        { id: 'screens', text: 'Have you taken a break from screens?' },
+        { id: 'outside', text: 'Have you been outside today?' },
+      ];
+
+      const evening = [
+        { id: 'exercise', text: 'Did you exercise today?' },
+        { id: 'mealEvening', text: 'Did you eat well today? No junk?' },
+        { id: 'water', text: 'Did you drink enough water?' },
+        { id: 'read', text: 'Did you read anything today?' },
+        { id: 'mindful', text: 'Did you take a quiet moment for yourself?' },
+        { id: 'journal', text: 'Have you reflected on the day?' },
+        { id: 'tidied', text: 'Is your space in order?' },
+        { id: 'prepared', text: 'Are you set up for tomorrow?' },
+      ];
+
+      const night = [
+        { id: 'exercise', text: 'Did you move your body today?' },
+        { id: 'mealNight', text: 'Did you eat well today?' },
+        { id: 'water', text: 'Did you drink enough water?' },
+        { id: 'read', text: 'Did you read at all today?' },
+        { id: 'mindful', text: 'Did you have a quiet moment today?' },
+        { id: 'prepared', text: 'Ready for tomorrow?' },
+      ];
+
+      const sets = { morning, afternoon, evening, night };
+      return sets[t] || evening;
+    },
+
+    answer(id, value) {
+      this.answers[id] = value;
+
+      // Persist
+      if (!this.data[this.currentDate]) this.data[this.currentDate] = {};
+      this.data[this.currentDate][id] = value;
+      localStorage.setItem('habit-tracker-data', JSON.stringify(this.data));
+
+      // Advance to next unanswered question
+      if (!this.allAnswered) {
+        setTimeout(() => {
+          const next = this.questions.findIndex(q => this.answers[q.id] === undefined);
+          if (next !== -1) this.currentIndex = next;
+        }, 300);
+      }
     },
 
     todayStr() {
       const d = new Date();
       return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
     },
-    shiftDate(str, days) {
-      const [y,m,d] = str.split('-').map(Number);
-      const dt = new Date(y, m-1, d);
-      dt.setDate(dt.getDate() + days);
-      return dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0');
-    },
-    countDone(date) {
-      const d = this.data[date] || {};
-      return this.habits.filter(h => d[h.id]).length;
-    },
-    isAllDone(date) { return this.countDone(date) === this.habits.length; },
-    isDone(id) { return !!(this.data[this.currentDate] && this.data[this.currentDate][id]); },
 
-    toggle(habit) {
-      if (!this.data[this.currentDate]) this.data[this.currentDate] = {};
-      this.data[this.currentDate][habit.id] = !this.data[this.currentDate][habit.id];
-      localStorage.setItem('habit-tracker-data', JSON.stringify(this.data));
-      if (this.streak > this.bestStreak) {
-        this.bestStreak = this.streak;
-        localStorage.setItem('habit-tracker-best-streak', String(this.bestStreak));
-      }
-    },
     toggleTheme() {
       this.light = !this.light;
       localStorage.setItem('cyl-theme', this.light ? 'light' : 'dark');
