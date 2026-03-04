@@ -21,6 +21,8 @@
     --border: #1e1e1e;
     --btn-bg: transparent;
     --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --bad: #8b4444;
+    --stat-border: #222;
   }
 
   html.light {
@@ -32,6 +34,8 @@
     --accent-soft: rgba(184,148,62,0.07);
     --border: #e8e8e4;
     --btn-bg: transparent;
+    --bad: #8b4444;
+    --stat-border: #e0e0dc;
   }
 
   body {
@@ -229,6 +233,151 @@
     letter-spacing: 0.3px;
   }
 
+  /* Sheet overlay */
+  body.sheet-open { overflow: hidden; }
+  .sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 88vh;
+    background: var(--bg);
+    border-top: 1px solid var(--stat-border);
+    z-index: 101;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sheet.open { transform: translateY(0); }
+  .sheet-inner {
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 20px 24px 48px;
+  }
+  .sheet-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--stat-border);
+    border-radius: 2px;
+    margin: 0 auto 28px;
+  }
+
+  /* Stats: score */
+  .stat-score { text-align: center; padding: 0 0 28px; }
+  .stat-score-num {
+    font-size: 2.8rem;
+    font-weight: 300;
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+  .stat-score-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+  }
+  .stat-score-verdict {
+    font-size: 0.88rem;
+    font-weight: 400;
+    margin-top: 16px;
+    line-height: 1.55;
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Stats: blocks */
+  .stat-block {
+    padding: 20px 0;
+    border-top: 1px solid var(--stat-border);
+  }
+  .stat-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .stat-text {
+    font-size: 0.88rem;
+    font-weight: 400;
+    line-height: 1.55;
+  }
+  .stat-good { color: var(--accent); }
+  .stat-bad { color: var(--bad); }
+
+  /* Stats: life cost */
+  .life-cost {
+    padding: 24px 0 16px;
+    border-top: 1px solid var(--stat-border);
+  }
+  .life-cost-title {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+  }
+  .life-cost-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 5px 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+  .life-cost-row .val { font-weight: 500; }
+  .life-cost-net {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 14px 0 4px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--text);
+    border-top: 1px solid var(--stat-border);
+    margin-top: 10px;
+  }
+  .life-cost-disclaimer {
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+    margin-top: 20px;
+    line-height: 1.55;
+    opacity: 0.7;
+  }
+
+  /* "Your truth" link */
+  .truth-link { text-align: center; padding: 28px 0 0; }
+  .truth-link button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 400;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    padding: 8px 16px;
+    transition: color var(--transition);
+  }
+  .truth-link button:hover { color: var(--accent); }
+
+  /* No data */
+  .no-data { text-align: center; padding: 32px 0; }
+  .no-data-title { color: var(--text-secondary); font-size: 0.9rem; font-weight: 400; }
+  .no-data-sub { color: var(--text-secondary); font-size: 0.8rem; margin-top: 4px; font-weight: 400; }
+
   @media (max-width: 480px) {
     .container { padding: 24px 20px 56px; }
     .greeting { padding: 36px 0 8px; }
@@ -248,6 +397,9 @@
       <div class="bedtime">
         <div class="bedtime-text">Go to sleep.</div>
         <div class="bedtime-sub">Tomorrow's a new day. Rest now.</div>
+      </div>
+      <div class="truth-link">
+        <button @click="openStats()">your truth</button>
       </div>
       <footer class="site-footer">Built with discipline.</footer>
     </div>
@@ -296,9 +448,79 @@
         <div class="closing-text" x-html="closingMessage"></div>
       </div>
 
+      <div class="truth-link">
+        <button @click="openStats()">your truth</button>
+      </div>
+
       <footer class="site-footer">Built with discipline.</footer>
     </div>
   </template>
+</div>
+
+<!-- Stats bottom sheet -->
+<div class="sheet-backdrop" :class="{ open: statsOpen }" @click="closeStats()"></div>
+<div class="sheet" :class="{ open: statsOpen }" x-effect="document.body.classList.toggle('sheet-open', statsOpen)">
+  <div class="sheet-inner">
+    <div class="sheet-handle"></div>
+
+    <template x-if="statsOpen && !statsData">
+      <div class="no-data">
+        <div class="no-data-title">No data yet.</div>
+        <div class="no-data-sub">Come back after your first check-in.</div>
+      </div>
+    </template>
+
+    <template x-if="statsOpen && statsData">
+      <div>
+        <div class="stat-score">
+          <div class="stat-score-num" :class="statsData.score >= 50 ? 'stat-good' : 'stat-bad'" x-text="Math.round(statsData.score) + '%'"></div>
+          <div class="stat-score-label">honesty score</div>
+          <div class="stat-score-verdict" x-text="statsData.verdict"></div>
+        </div>
+
+        <div class="stat-block">
+          <div class="stat-label">sleep</div>
+          <div class="stat-text">
+            You woke up on time <span :class="statsData.sleep.pct >= 60 ? 'stat-good' : 'stat-bad'" x-text="Math.round(statsData.sleep.pct) + '%'"></span> of the time.
+            <span x-text="statsData.sleep.msg"></span>
+          </div>
+        </div>
+
+        <div class="stat-block">
+          <div class="stat-label">exercise</div>
+          <div class="stat-text">
+            You moved your body <span :class="statsData.exercise.pct >= 50 ? 'stat-good' : 'stat-bad'" x-text="Math.round(statsData.exercise.pct) + '%'"></span> of days.
+            <span x-text="statsData.exercise.msg"></span>
+          </div>
+        </div>
+
+        <div class="stat-block">
+          <div class="stat-label">water</div>
+          <div class="stat-text">
+            You drank enough water <span :class="statsData.water.pct >= 60 ? 'stat-good' : 'stat-bad'" x-text="Math.round(statsData.water.pct) + '%'"></span> of the time.
+            <span x-text="statsData.water.msg"></span>
+          </div>
+        </div>
+
+        <div class="life-cost">
+          <div class="life-cost-title">life cost calculator</div>
+          <div class="life-cost-row">
+            <span>estimated healthy time lost</span>
+            <span class="val stat-bad" x-text="statsData.lifeCost.lost"></span>
+          </div>
+          <div class="life-cost-row">
+            <span>estimated healthy time gained</span>
+            <span class="val stat-good" x-text="statsData.lifeCost.gained"></span>
+          </div>
+          <div class="life-cost-net">
+            <span>net</span>
+            <span :class="statsData.lifeCost.netMin >= 0 ? 'stat-good' : 'stat-bad'" x-text="statsData.lifeCost.net"></span>
+          </div>
+          <div class="life-cost-disclaimer">Estimates based on aggregate health research. Individual results vary. Not medical advice.</div>
+        </div>
+      </div>
+    </template>
+  </div>
 </div>
 
 <script>
@@ -309,6 +531,8 @@ function app() {
     data: {},
     currentIndex: 0,
     answers: {},
+    statsOpen: false,
+    statsData: null,
 
     questions: [],
 
@@ -451,6 +675,115 @@ function app() {
     toggleTheme() {
       this.light = !this.light;
       localStorage.setItem('cyl-theme', this.light ? 'light' : 'dark');
+    },
+
+    openStats() {
+      this.statsData = this.computeStats();
+      this.statsOpen = true;
+    },
+
+    closeStats() {
+      this.statsOpen = false;
+    },
+
+    computeStats() {
+      const sleepIds = ['wokeOnTime'];
+      const exerciseIds = ['exercise', 'moved'];
+      const waterIds = ['water'];
+
+      let sleepYes = 0, sleepTotal = 0;
+      let exYes = 0, exTotal = 0;
+      let waterYes = 0, waterTotal = 0;
+      let totalYes = 0, totalAnswered = 0;
+      let daysTracked = 0;
+
+      const dates = Object.keys(this.data);
+      if (dates.length === 0) return null;
+
+      for (const date of dates) {
+        const day = this.data[date];
+        if (!day || typeof day !== 'object') continue;
+        daysTracked++;
+        for (const [key, val] of Object.entries(day)) {
+          if (val === true || val === false) {
+            totalAnswered++;
+            if (val) totalYes++;
+          }
+          if (sleepIds.includes(key)) {
+            sleepTotal++;
+            if (val === true) sleepYes++;
+          }
+          if (exerciseIds.includes(key)) {
+            exTotal++;
+            if (val === true) exYes++;
+          }
+          if (waterIds.includes(key)) {
+            waterTotal++;
+            if (val === true) waterYes++;
+          }
+        }
+      }
+
+      if (totalAnswered === 0) return null;
+
+      const pct = (y, t) => t > 0 ? (y / t) * 100 : 0;
+      const sleepPct = pct(sleepYes, sleepTotal);
+      const exPct = pct(exYes, exTotal);
+      const waterPct = pct(waterYes, waterTotal);
+      const score = (totalYes / totalAnswered) * 100;
+
+      // Verdicts
+      let verdict;
+      if (score >= 90) verdict = "You're not just tracking habits. You're living them. Respect.";
+      else if (score >= 70) verdict = "You show up most days. That puts you ahead of almost everyone.";
+      else if (score >= 50) verdict = "Half the battle is honesty. You're fighting, but there's work to do.";
+      else if (score >= 30) verdict = "The data doesn't lie. You know what needs to change.";
+      else verdict = "This is your wake-up call. The numbers are brutal, but you opened this page. That's step one.";
+
+      // Category messages
+      const sleepMsg = sleepPct >= 80 ? "Your sleep discipline is strong."
+        : sleepPct >= 50 ? "Inconsistent. Research shows erratic wake times fragment sleep quality."
+        : "You're losing ~16 minutes of healthy life per bad night. This adds up fast.";
+
+      const exMsg = exPct >= 70 ? "Consistent movement. This is adding years."
+        : exPct >= 40 ? "Some days on, some off. The CDC says 150 min/week is the minimum."
+        : "Sedentary days cost you ~30 minutes of healthy life each. The research is clear.";
+
+      const waterMsg = waterPct >= 70 ? "Good hydration habits."
+        : waterPct >= 40 ? "Spotty. Chronic mild dehydration affects cognition and energy."
+        : "Consistently under-hydrated. Your body is running on fumes.";
+
+      // Life cost (estimated minutes per tracked day)
+      const sleepBadDays = sleepTotal - sleepYes;
+      const exBadDays = exTotal - exYes;
+      const waterBadDays = waterTotal - waterYes;
+
+      const lostMin = (sleepBadDays * 16) + (exBadDays * 30) + (waterBadDays * 10);
+      const gainedMin = (sleepYes * 8) + (exYes * 30) + (waterYes * 5);
+      const netMin = gainedMin - lostMin;
+
+      const fmtTime = (mins) => {
+        const absM = Math.abs(mins);
+        if (absM < 60) return absM + ' min';
+        const h = Math.floor(absM / 60);
+        const m = absM % 60;
+        return m > 0 ? h + 'h ' + m + 'min' : h + 'h';
+      };
+
+      return {
+        score,
+        verdict,
+        daysTracked,
+        sleep: { pct: sleepPct, msg: sleepMsg },
+        exercise: { pct: exPct, msg: exMsg },
+        water: { pct: waterPct, msg: waterMsg },
+        lifeCost: {
+          lost: '-' + fmtTime(lostMin),
+          gained: '+' + fmtTime(gainedMin),
+          net: (netMin >= 0 ? '+' : '-') + fmtTime(Math.abs(netMin)),
+          netMin,
+        },
+      };
     },
   };
 }
